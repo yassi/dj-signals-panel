@@ -85,7 +85,10 @@ Add any custom configuration to your Django settings if needed:
 ```python
 # Optional: Add custom settings for dj_signals_panel
 DJ_SIGNALS_PANEL_SETTINGS = {
-    # Add your configuration here
+    'LOAD_DEFAULT_CSS': True,   # Set False to skip built-in styles
+    # Static paths are relative to app's static/ dir (e.g. 'myapp/css/overrides.css'
+    # for a file at myapp/static/myapp/css/overrides.css). Full URLs also accepted.
+    'EXTRA_CSS': [],
 }
 ```
 
