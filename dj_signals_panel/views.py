@@ -1,14 +1,10 @@
-import csv
-import io
-from dataclasses import asdict
-
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.contrib import admin
-from django.http import Http404, JsonResponse, HttpResponse
+from django.http import Http404
 
-from .conf import get_config, get_css_context
-from .utils import SignalListInterface, SignalDetailInterface
+from .conf import get_css_context
+from .interfaces import SignalListInterface, SignalDetailInterface
 
 
 @staff_member_required
