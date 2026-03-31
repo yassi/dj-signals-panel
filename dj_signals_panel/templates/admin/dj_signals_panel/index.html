@@ -12,11 +12,11 @@
             </div>
             <div class="stat-item">
                 <div class="stat-label">{% trans "Total Receivers" %}</div>
-                <div class="stat-value stat-success">{{ stats.total_receivers }}</div>
+                <div class="stat-value">{{ stats.total_receivers }}</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">{% trans "No Receivers" %}</div>
-                <div class="stat-value {% if stats.signals_without_receivers > 0 %}stat-warning{% else %}stat-disabled{% endif %}">
+                <div class="stat-value">
                     {{ stats.signals_without_receivers }}
                 </div>
             </div>
@@ -121,7 +121,7 @@
                         </a>
                     </td>
                     <td>
-                        <span class="receiver-count {% if sig.receiver_count == 0 %}no-receivers{% endif %}">
+                        <span class="receiver-count">
                             {{ sig.receiver_count }}
                         </span>
                     </td>

@@ -35,17 +35,6 @@
     color: var(--link-fg, #417690);
 }
 
-.stat-value.stat-success {
-    color: #30a030;
-}
-
-.stat-value.stat-warning {
-    color: #e47911;
-}
-
-.stat-value.stat-disabled {
-    color: #999;
-}
 
 /* ===== SEARCH & FILTER ===== */
 
@@ -173,11 +162,6 @@
 
 .receiver-count {
     font-weight: bold;
-    color: var(--link-fg, #417690);
-}
-
-.receiver-count.no-receivers {
-    color: #e47911;
 }
 
 .app-filter-link {
@@ -319,10 +303,6 @@ tr.signal-has-issues .receiver-count {
     }
 
     .receiver-count {
-        color: var(--link-fg, #79aec8);
-    }
-
-    .receiver-count.no-receivers {
-        color: #e47911;
+        font-weight: bold;
     }
 }
