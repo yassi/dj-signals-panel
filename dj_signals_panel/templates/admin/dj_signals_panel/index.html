@@ -43,7 +43,7 @@
                         <label for="app_filter">{% trans "App" %}</label>
                         <select name="app" id="app_filter">
                             <option value="">{% trans "All" %}</option>
-                            {% for app in available_apps %}
+                            {% for app in signal_apps %}
                             <option value="{{ app }}" {% if app_filter == app %}selected{% endif %}>
                                 {{ app }}
                             </option>
@@ -106,7 +106,7 @@
             </thead>
             <tbody>
                 {% for sig in signals %}
-                <tr class="{% cycle 'row1' 'row2' %}{% if sig.has_issues %} signal-has-issues{% endif %}">
+                <tr class="{% cycle 'row1' 'row2' %}">
                     <td>
                         <a href="{% url 'dj_signals_panel:signal_detail' sig.signal_id %}" class="signal-link">
                             <code>{{ sig.name }}</code>

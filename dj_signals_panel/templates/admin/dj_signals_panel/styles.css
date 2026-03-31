@@ -225,15 +225,6 @@
     margin-right: 6px;
 }
 
-/* ===== HEALTH INDICATORS ===== */
-
-tr.signal-has-issues td {
-    opacity: 0.65;
-}
-
-tr.signal-has-issues .receiver-count {
-    opacity: 1;
-}
 
 /* ===== SOURCE PREVIEW ===== */
 

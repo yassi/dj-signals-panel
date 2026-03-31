@@ -25,7 +25,7 @@ def index(request):
 
     stats = interface.get_stats()
     grouped = interface.get_grouped_signals()
-    available_apps = sorted(grouped.keys())
+    signal_apps = sorted(grouped.keys())
 
     context = admin.site.each_context(request)
     context.update(get_css_context())
@@ -37,7 +37,7 @@ def index(request):
             "grouped_signals": grouped,
             "search_query": search_query,
             "app_filter": app_filter,
-            "available_apps": available_apps,
+            "signal_apps": signal_apps,
             "total_displayed": len(signals),
         }
     )
