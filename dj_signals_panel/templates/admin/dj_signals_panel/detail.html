@@ -32,17 +32,9 @@
                     <td><code>{{ signal.module }}</code></td>
                 </tr>
                 <tr>
-                    <th>{% trans "Category" %}</th>
-                    <td>
-                        <span class="category-badge category-{{ signal.category }}">{{ signal.category|title }}</span>
-                    </td>
-                </tr>
-                {% if signal.app_label %}
-                <tr>
                     <th>{% trans "App" %}</th>
-                    <td>{{ signal.app_label }}</td>
+                    <td><span class="app-badge">{{ signal.app_label }}</span></td>
                 </tr>
-                {% endif %}
                 {% if signal.providing_args %}
                 <tr>
                     <th>{% trans "Providing Args" %}</th>

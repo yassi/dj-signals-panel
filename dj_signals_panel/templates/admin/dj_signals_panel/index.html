@@ -20,16 +20,6 @@
                     {{ stats.signals_without_receivers }}
                 </div>
             </div>
-            <div class="stat-item">
-                <div class="stat-label">{% trans "Most Connected" %}</div>
-                <div class="stat-value">
-                    {% if stats.most_connected_signal %}
-                        {{ stats.most_connected_signal }} ({{ stats.most_connected_count }})
-                    {% else %}
-                        —
-                    {% endif %}
-                </div>
-            </div>
         </div>
     </div>
 
@@ -45,17 +35,17 @@
                             id="searchbar"
                             name="q"
                             value="{{ search_query }}"
-                            placeholder="{% trans 'Search by name, module, or category...' %}"
+                            placeholder="{% trans 'Search by name, module, or app...' %}"
                             style="width: 300px;"
                         >
                     </div>
                     <div class="search-field-group">
-                        <label for="category_filter">{% trans "Category" %}</label>
-                        <select name="category" id="category_filter">
+                        <label for="app_filter">{% trans "App" %}</label>
+                        <select name="app" id="app_filter">
                             <option value="">{% trans "All" %}</option>
-                            {% for cat in available_categories %}
-                            <option value="{{ cat }}" {% if category_filter == cat %}selected{% endif %}>
-                                {{ cat|title }}
+                            {% for app in available_apps %}
+                            <option value="{{ app }}" {% if app_filter == app %}selected{% endif %}>
+                                {{ app }}
                             </option>
                             {% endfor %}
                         </select>
@@ -67,17 +57,17 @@
                 </div>
                 <div class="search-help">
                     <p class="help">
-                        {% trans "Search across signal names and modules. Filter by category to narrow results." %}
+                        {% trans "Search across signal names and modules. Filter by app to narrow results." %}
                     </p>
                 </div>
             </div>
         </form>
 
-        {% if category_filter %}
+        {% if app_filter %}
         <div class="active-filters">
             <strong>{% trans "Active Filter:" %}</strong>
             <span class="filter-badge filter-badge-active">
-                {{ category_filter|title }}
+                {{ app_filter }}
                 <a href="?{% if search_query %}q={{ search_query }}{% endif %}" class="filter-remove" title="{% trans 'Remove filter' %}">×</a>
             </span>
         </div>
@@ -86,7 +76,7 @@
 
     <!-- Signals Table -->
     <div class="module">
-        {% if search_query or category_filter %}
+        {% if search_query or app_filter %}
         <p class="help">
             {% blocktrans count counter=total_displayed %}
                 Showing {{ counter }} signal
@@ -107,7 +97,7 @@
                         <div class="text">{% trans "Module" %}</div>
                     </th>
                     <th scope="col">
-                        <div class="text">{% trans "Category" %}</div>
+                        <div class="text">{% trans "App" %}</div>
                     </th>
                     <th scope="col">
                         <div class="text">{% trans "Receivers" %}</div>
@@ -126,8 +116,8 @@
                         <code class="module-path">{{ sig.module }}</code>
                     </td>
                     <td>
-                        <a href="?category={{ sig.category }}{% if search_query %}&q={{ search_query }}{% endif %}" class="category-filter-link">
-                            <span class="category-badge category-{{ sig.category }}">{{ sig.category|title }}</span>
+                        <a href="?app={{ sig.app_label }}{% if search_query %}&q={{ search_query }}{% endif %}" class="app-filter-link">
+                            <span class="app-badge">{{ sig.app_label }}</span>
                         </a>
                     </td>
                     <td>

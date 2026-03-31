@@ -27,14 +27,14 @@ class SignalListInterface:
         return self._signals
 
     def get_grouped_signals(self) -> dict[str, list[SignalSummary]]:
-        """Signals grouped by category."""
+        """Signals grouped by app label."""
         grouped: dict[str, list[SignalSummary]] = {}
         for sig in self.get_signal_list():
-            grouped.setdefault(sig.category, []).append(sig)
+            grouped.setdefault(sig.app_label, []).append(sig)
         return grouped
 
     def search_signals(self, query: str) -> list[SignalSummary]:
-        """Filter signals by name, module, or category."""
+        """Filter signals by name, module, or app."""
         q = query.lower()
         return [
             s
@@ -43,7 +43,7 @@ class SignalListInterface:
                 q in s.name.lower()
                 or q in s.module.lower()
                 or q in s.signal_id.lower()
-                or q in s.category.lower()
+                or q in s.app_label.lower()
             )
         ]
 

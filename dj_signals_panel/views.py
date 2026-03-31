@@ -13,19 +13,19 @@ def index(request):
     interface = SignalListInterface()
 
     search_query = request.GET.get("q", "").strip()
-    category_filter = request.GET.get("category", "").strip()
+    app_filter = request.GET.get("app", "").strip()
 
     if search_query:
         signals = interface.search_signals(search_query)
     else:
         signals = interface.get_signal_list()
 
-    if category_filter:
-        signals = [s for s in signals if s.category == category_filter]
+    if app_filter:
+        signals = [s for s in signals if s.app_label == app_filter]
 
     stats = interface.get_stats()
     grouped = interface.get_grouped_signals()
-    available_categories = sorted(grouped.keys())
+    available_apps = sorted(grouped.keys())
 
     context = admin.site.each_context(request)
     context.update(get_css_context())
@@ -36,8 +36,8 @@ def index(request):
             "stats": stats,
             "grouped_signals": grouped,
             "search_query": search_query,
-            "category_filter": category_filter,
-            "available_categories": available_categories,
+            "app_filter": app_filter,
+            "available_apps": available_apps,
             "total_displayed": len(signals),
         }
     )

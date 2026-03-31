@@ -31,8 +31,7 @@ class SignalSummary:
     signal_id: str
     name: str
     module: str
-    category: str
-    app_label: str | None
+    app_label: str
     receiver_count: int
     providing_args: list[str] = field(default_factory=list)
 
@@ -50,7 +49,7 @@ class SignalStats:
     signals_without_receivers: int
     most_connected_signal: str | None
     most_connected_count: int
-    category_counts: dict[str, int] = field(default_factory=dict)
+    app_counts: dict[str, int] = field(default_factory=dict)
 
 
 @dataclass
@@ -60,8 +59,7 @@ class SignalDetail:
     signal_id: str
     name: str
     module: str
-    category: str
-    app_label: str | None
+    app_label: str
     providing_args: list[str] = field(default_factory=list)
     receivers: list[ReceiverInfo] = field(default_factory=list)
 
@@ -88,13 +86,6 @@ BUILTIN_SIGNALS: dict[str, list[str]] = {
     "django.db.backends.signals": [
         "connection_created",
     ],
-}
-
-CATEGORY_MAP: dict[str, str] = {
-    "django.db.models.signals": "model",
-    "django.core.signals": "request",
-    "django.test.signals": "test",
-    "django.db.backends.signals": "management",
 }
 
 
@@ -203,7 +194,7 @@ class DiscoveredSignal:
     Represents a Django signal discovered by the panel.
 
     Wraps a django.dispatch.Signal instance alongside the metadata needed
-    to describe it: its dotted id, name, module, category, and app label.
+    to describe it: its dotted id, name, module, and owning app label.
     """
 
     def __init__(
@@ -212,14 +203,12 @@ class DiscoveredSignal:
         signal_obj: DjangoSignal,
         name: str,
         module: str,
-        category: str,
-        app_label: str | None,
+        app_label: str,
     ) -> None:
         self.signal_id = signal_id
         self._signal_obj = signal_obj
         self.name = name
         self.module = module
-        self.category = category
         self.app_label = app_label
 
     @classmethod
@@ -241,19 +230,12 @@ class DiscoveredSignal:
                 return None
         except Exception:
             return None
-        category = CATEGORY_MAP.get(module_path, "custom")
-        app_label = (
-            None
-            if category != "custom"
-            else SignalUtils.module_to_app_label(module_path)
-        )
         return cls(
             signal_id=signal_id,
             signal_obj=obj,
             name=attr_name,
             module=module_path,
-            category=category,
-            app_label=app_label,
+            app_label=SignalUtils.module_to_app_label(module_path),
         )
 
     @classmethod
@@ -263,8 +245,7 @@ class DiscoveredSignal:
         signal_id: str,
         name: str,
         module_path: str,
-        category: str,
-        app_label: str | None,
+        app_label: str,
     ) -> DiscoveredSignal:
         """Construct directly from an already-resolved Signal object."""
         return cls(
@@ -272,7 +253,6 @@ class DiscoveredSignal:
             signal_obj=signal_obj,
             name=name,
             module=module_path,
-            category=category,
             app_label=app_label,
         )
 
@@ -305,7 +285,6 @@ class DiscoveredSignal:
             signal_id=self.signal_id,
             name=self.name,
             module=self.module,
-            category=self.category,
             app_label=self.app_label,
             receiver_count=self.receiver_count,
             providing_args=self.providing_args,
@@ -317,7 +296,6 @@ class DiscoveredSignal:
             signal_id=self.signal_id,
             name=self.name,
             module=self.module,
-            category=self.category,
             app_label=self.app_label,
             providing_args=self.providing_args,
             receivers=[r.to_info() for r in self.receivers],
@@ -338,7 +316,13 @@ class SignalUtils:
         return apps.get_app_configs()
 
     @staticmethod
-    def module_to_app_label(module_path: str) -> str | None:
+    def module_to_app_label(module_path: str) -> str:
+        """
+        Return the Django app label that owns module_path.
+
+        Falls back to the top-level package name when the module does not
+        belong to a registered app (e.g. django.db.models.signals → "django").
+        """
         from django.apps import apps
 
         parts = module_path.split(".")
@@ -348,7 +332,7 @@ class SignalUtils:
                 return apps.get_app_config(candidate.split(".")[-1]).label
             except LookupError:
                 continue
-        return None
+        return parts[0]
 
     @staticmethod
     def discover_builtin() -> list[DiscoveredSignal]:
@@ -359,7 +343,7 @@ class SignalUtils:
                 mod = importlib.import_module(module_path)
             except ImportError:
                 continue
-            category = CATEGORY_MAP.get(module_path, "other")
+            app_label = SignalUtils.module_to_app_label(module_path)
             for name in signal_names:
                 signal_obj = getattr(mod, name, None)
                 if signal_obj is None or not isinstance(signal_obj, DjangoSignal):
@@ -370,8 +354,7 @@ class SignalUtils:
                         f"{module_path}.{name}",
                         name,
                         module_path,
-                        category,
-                        None,
+                        app_label,
                     )
                 )
         return results
@@ -417,7 +400,7 @@ class SignalUtils:
                 seen_ids.add(signal_id)
                 results.append(
                     DiscoveredSignal.from_obj(
-                        obj, signal_id, attr_name, module_path, "custom", app_label
+                        obj, signal_id, attr_name, module_path, app_label
                     )
                 )
 
@@ -444,9 +427,9 @@ class SignalUtils:
         without_receivers = sum(1 for s in signals if s.receiver_count == 0)
         most_connected = max(signals, key=lambda s: s.receiver_count)
 
-        category_counts: dict[str, int] = {}
+        app_counts: dict[str, int] = {}
         for s in signals:
-            category_counts[s.category] = category_counts.get(s.category, 0) + 1
+            app_counts[s.app_label] = app_counts.get(s.app_label, 0) + 1
 
         return SignalStats(
             total_signals=len(signals),
@@ -456,5 +439,5 @@ class SignalUtils:
             if most_connected.receiver_count > 0
             else None,
             most_connected_count=most_connected.receiver_count,
-            category_counts=category_counts,
+            app_counts=app_counts,
         )
