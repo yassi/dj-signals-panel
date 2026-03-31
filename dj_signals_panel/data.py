@@ -340,13 +340,12 @@ class SignalUtils:
                 modules_to_scan.append(module_path)
 
         for app_config in SignalUtils.get_installed_app_configs():
-            for suffix in ("signals", "handlers"):
-                module_path = f"{app_config.name}.{suffix}"
-                if module_path not in modules_to_scan:
-                    modules_to_scan.append(module_path)
+            module_path = f"{app_config.name}.signals"
+            if module_path not in modules_to_scan:
+                modules_to_scan.append(module_path)
 
         results: list[DiscoveredSignal] = []
-        seen_ids: set[str] = set()
+        seen_object_ids: set[int] = set()
 
         for module_path in modules_to_scan:
             try:
@@ -360,10 +359,13 @@ class SignalUtils:
                 obj = getattr(mod, attr_name, None)
                 if not isinstance(obj, DjangoSignal):
                     continue
-                signal_id = f"{module_path}.{attr_name}"
-                if signal_id in seen_ids:
+                # Deduplicate by Python object identity: a Signal imported into
+                # multiple modules is the same object — only record it once,
+                # using the module path from its first (canonical) encounter.
+                if id(obj) in seen_object_ids:
                     continue
-                seen_ids.add(signal_id)
+                seen_object_ids.add(id(obj))
+                signal_id = f"{module_path}.{attr_name}"
                 results.append(
                     DiscoveredSignal.from_obj(
                         obj, signal_id, attr_name, module_path, app_label
