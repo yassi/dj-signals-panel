@@ -66,10 +66,8 @@
         {% if app_filter %}
         <div class="active-filters">
             <strong>{% trans "Active Filter:" %}</strong>
-            <span class="filter-badge filter-badge-active">
-                {{ app_filter }}
-                <a href="?{% if search_query %}q={{ search_query }}{% endif %}" class="filter-remove" title="{% trans 'Remove filter' %}">×</a>
-            </span>
+            {{ app_filter }}
+            <a href="?{% if search_query %}q={{ search_query }}{% endif %}" class="filter-remove" title="{% trans 'Remove filter' %}">× {% trans "clear" %}</a>
         </div>
         {% endif %}
     </div>

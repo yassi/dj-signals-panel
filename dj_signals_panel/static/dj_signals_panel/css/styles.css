@@ -101,24 +101,15 @@
     border-top: 1px solid var(--border-color, #ddd);
 }
 
-.filter-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 3px;
-    font-size: 12px;
-    background-color: var(--link-fg, #417690);
-    color: white;
-}
-
 .filter-remove {
-    color: white;
+    margin-left: 8px;
     text-decoration: none;
-    margin-left: 6px;
-    font-weight: bold;
+    color: var(--link-fg, #417690);
+    font-size: 12px;
 }
 
 .filter-remove:hover {
-    opacity: 0.8;
+    text-decoration: underline;
 }
 
 /* ===== TABLE ===== */
