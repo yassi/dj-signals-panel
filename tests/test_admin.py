@@ -9,13 +9,13 @@ from django.contrib.auth import get_user_model
 from django.test import Client
 from django.urls import reverse
 
-from .base import CeleryPanelTestCase
+from .base import SignalsPanelTestCase
 
 
 User = get_user_model()
 
 
-class TestAdminIntegration(CeleryPanelTestCase):
+class TestAdminIntegration(SignalsPanelTestCase):
     """Test cases for Django Admin integration."""
 
     def test_celery_panel_appears_in_admin_index(self):

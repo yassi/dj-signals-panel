@@ -13,14 +13,14 @@ from django.contrib.auth import get_user_model
 from django.test import Client
 from django.urls import reverse
 
-from .base import CeleryPanelTestCase
+from .base import SignalsPanelTestCase
 
 User = get_user_model()
 
 INDEX_URL = "/admin/dj-signals-panel/"
 
 
-class TestIndexViewAccess(CeleryPanelTestCase):
+class TestIndexViewAccess(SignalsPanelTestCase):
     """Access control: who can and cannot reach the index view."""
 
     def test_staff_user_can_access_index(self):
@@ -43,7 +43,7 @@ class TestIndexViewAccess(CeleryPanelTestCase):
         self.assertEqual(response.status_code, 302)
 
 
-class TestIndexViewRendering(CeleryPanelTestCase):
+class TestIndexViewRendering(SignalsPanelTestCase):
     """Template rendering and context structure for the index view."""
 
     def test_uses_correct_template(self):
@@ -111,7 +111,7 @@ class TestIndexViewRendering(CeleryPanelTestCase):
         self.assertGreaterEqual(stats.signals_without_receivers, 0)
 
 
-class TestIndexViewSearch(CeleryPanelTestCase):
+class TestIndexViewSearch(SignalsPanelTestCase):
     """Search query (?q=) behaviour on the index view."""
 
     def test_empty_q_param_returns_same_as_no_param(self):
@@ -186,7 +186,7 @@ class TestIndexViewSearch(CeleryPanelTestCase):
         self.assertEqual(response.context["total_displayed"], 0)
 
 
-class TestIndexViewAppFilter(CeleryPanelTestCase):
+class TestIndexViewAppFilter(SignalsPanelTestCase):
     """App filter (?app=) behaviour on the index view."""
 
     def test_app_filter_is_echoed_in_context(self):

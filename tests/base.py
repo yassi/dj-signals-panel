@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class CeleryPanelTestCase(TestCase):
+class SignalsPanelTestCase(TestCase):
     """
     Base test case for Dj Signals Panel tests.
     Sets up authenticated admin user for testing.

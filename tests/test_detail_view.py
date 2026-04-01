@@ -6,13 +6,14 @@ dotted signal_id path (e.g. "app.signals.user_profile_created"). It:
 - Requires staff-level authentication
 - Returns HTTP 404 for unknown or malformed signal IDs
 - Provides the signal's metadata and its connected receivers in context
+- Renders source file/line locations and optional source previews per receiver
 """
 
 from django.contrib.auth import get_user_model
-from django.test import Client
+from django.test import Client, override_settings
 from django.urls import reverse
 
-from .base import CeleryPanelTestCase
+from .base import SignalsPanelTestCase
 
 User = get_user_model()
 
@@ -32,7 +33,7 @@ def detail_url(signal_id: str) -> str:
     )
 
 
-class TestDetailViewAccess(CeleryPanelTestCase):
+class TestDetailViewAccess(SignalsPanelTestCase):
     """Access control: who can and cannot reach the detail view."""
 
     def test_staff_user_can_access_detail(self):
@@ -73,7 +74,7 @@ class TestDetailViewAccess(CeleryPanelTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class TestDetailViewRendering(CeleryPanelTestCase):
+class TestDetailViewRendering(SignalsPanelTestCase):
     """Template and context structure for the detail view."""
 
     def test_uses_correct_template(self):
@@ -101,7 +102,7 @@ class TestDetailViewRendering(CeleryPanelTestCase):
         self.assertContains(response, "user_profile_created")
 
 
-class TestDetailViewSignalData(CeleryPanelTestCase):
+class TestDetailViewSignalData(SignalsPanelTestCase):
     """Data accuracy: the signal metadata returned by the detail view."""
 
     def test_signal_name_matches_requested_id(self):
@@ -133,7 +134,7 @@ class TestDetailViewSignalData(CeleryPanelTestCase):
         self.assertEqual(signal.module, "django.db.models.signals")
 
 
-class TestDetailViewReceiverData(CeleryPanelTestCase):
+class TestDetailViewReceiverData(SignalsPanelTestCase):
     """Data accuracy: receiver information on the detail view."""
 
     def test_signal_with_receivers_lists_them(self):
@@ -187,3 +188,129 @@ class TestDetailViewReceiverData(CeleryPanelTestCase):
         receiver_names = [r.function_name for r in response.context["receivers"]]
         count = receiver_names.count("on_profile_created_welcome")
         self.assertEqual(count, 1)
+
+
+class TestDetailViewSourceLocation(SignalsPanelTestCase):
+    """
+    Tests for source file and line number resolution on ReceiverInfo.
+
+    source_file / source_line are resolved via inspect and are always
+    populated when the handler is a plain Python function (regardless of
+    the SHOW_SOURCE setting).
+    """
+
+    def test_receivers_have_source_file_populated(self):
+        response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        for r in response.context["receivers"]:
+            self.assertIsNotNone(
+                r.source_file,
+                f"Expected source_file for receiver {r.function_name!r}",
+            )
+
+    def test_source_file_is_absolute_path_string(self):
+        response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        for r in response.context["receivers"]:
+            self.assertIsInstance(r.source_file, str)
+            self.assertTrue(
+                r.source_file.startswith("/"),
+                f"Expected an absolute path, got {r.source_file!r}",
+            )
+
+    def test_source_file_points_to_handlers_module(self):
+        response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        for r in response.context["receivers"]:
+            self.assertTrue(
+                r.source_file.endswith("handlers.py"),
+                f"Expected source_file to end with 'handlers.py', got {r.source_file!r}",
+            )
+
+    def test_receivers_have_source_line_populated(self):
+        response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        for r in response.context["receivers"]:
+            self.assertIsNotNone(
+                r.source_line,
+                f"Expected source_line for receiver {r.function_name!r}",
+            )
+
+    def test_source_line_is_positive_integer(self):
+        response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        for r in response.context["receivers"]:
+            self.assertIsInstance(r.source_line, int)
+            self.assertGreater(r.source_line, 0)
+
+    def test_template_renders_source_location(self):
+        """The detail page renders 'handlers.py' as the source location."""
+        response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        self.assertContains(response, "handlers.py")
+
+
+class TestDetailViewSourcePreview(SignalsPanelTestCase):
+    """
+    Tests for the optional source preview feature (SHOW_SOURCE setting).
+
+    When SHOW_SOURCE=True (the example project default), each receiver's
+    source code is fetched and stored in ReceiverInfo.source_preview. The
+    template then renders a collapsible <details> block and includes the
+    highlight.js assets.
+
+    When SHOW_SOURCE=False, source_preview is None and neither the block
+    nor the assets appear in the HTML.
+    """
+
+    def test_show_source_true_populates_source_preview(self):
+        """With SHOW_SOURCE=True the source_preview field is a non-empty string."""
+        with override_settings(DJ_SIGNALS_PANEL_SETTINGS={"SHOW_SOURCE": True}):
+            response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        for r in response.context["receivers"]:
+            self.assertIsNotNone(
+                r.source_preview,
+                f"Expected source_preview for {r.function_name!r} when SHOW_SOURCE=True",
+            )
+            self.assertGreater(len(r.source_preview), 0)
+
+    def test_show_source_true_preview_contains_function_def(self):
+        """The source preview should contain the 'def' line of the handler."""
+        with override_settings(DJ_SIGNALS_PANEL_SETTINGS={"SHOW_SOURCE": True}):
+            response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        for r in response.context["receivers"]:
+            self.assertIn(
+                "def ",
+                r.source_preview,
+                f"source_preview for {r.function_name!r} does not contain a 'def' line",
+            )
+
+    @override_settings(DJ_SIGNALS_PANEL_SETTINGS={"SHOW_SOURCE": False})
+    def test_show_source_false_leaves_source_preview_none(self):
+        """With SHOW_SOURCE=False source_preview must be None on every receiver."""
+        response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        for r in response.context["receivers"]:
+            self.assertIsNone(
+                r.source_preview,
+                f"Expected source_preview=None for {r.function_name!r} when SHOW_SOURCE=False",
+            )
+
+    def test_show_source_true_renders_source_preview_block(self):
+        """With SHOW_SOURCE=True the page includes the collapsible source block."""
+        with override_settings(DJ_SIGNALS_PANEL_SETTINGS={"SHOW_SOURCE": True}):
+            response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        self.assertContains(response, "source-preview-details")
+        self.assertContains(response, "View Source")
+
+    @override_settings(DJ_SIGNALS_PANEL_SETTINGS={"SHOW_SOURCE": False})
+    def test_show_source_false_omits_source_preview_block(self):
+        """With SHOW_SOURCE=False the collapsible source block must not appear."""
+        response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        self.assertNotContains(response, "source-preview-details")
+        self.assertNotContains(response, "View Source")
+
+    def test_show_source_true_includes_highlight_js(self):
+        """With SHOW_SOURCE=True the page loads the highlight.js asset."""
+        with override_settings(DJ_SIGNALS_PANEL_SETTINGS={"SHOW_SOURCE": True}):
+            response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        self.assertContains(response, "highlight.min.js")
+
+    @override_settings(DJ_SIGNALS_PANEL_SETTINGS={"SHOW_SOURCE": False})
+    def test_show_source_false_excludes_highlight_js(self):
+        """With SHOW_SOURCE=False the highlight.js asset must not be loaded."""
+        response = self.client.get(detail_url(KNOWN_SIGNAL_ID))
+        self.assertNotContains(response, "highlight.min.js")
