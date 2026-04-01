@@ -19,18 +19,6 @@ jobs:
           - python-version: 3.14
             django-version: 4.2
 
-    services:
-      redis:
-        image: redis:7.4.1
-        ports: ["6379:6379"]
-      postgres:
-        image: postgres:16
-        ports: ["5432:5432"]
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
