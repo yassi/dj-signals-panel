@@ -172,13 +172,6 @@ python manage.py createsuperuser  # If you don't have an admin user
 3. Look for the "DJ SIGNALS PANEL" section in the admin interface
 
 
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
 ## Development Setup
 
 If you want to contribute to this project or set it up for local development:
@@ -186,9 +179,6 @@ If you want to contribute to this project or set it up for local development:
 ### Prerequisites
 
 - Python 3.9 or higher
-- Redis server running locally
-- Git
-- Autoconf
 - Docker
 
 It is reccommended that you use docker since it will automate much of dev env setup
@@ -230,11 +220,7 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-### 4. Populate Test Data (Optional)
-
-Add any custom management commands for populating test data if needed.
-
-### 6. Run the Development Server
+### 4. Run the Development Server
 
 ```bash
 python manage.py runserver
@@ -242,7 +228,7 @@ python manage.py runserver
 
 Visit `http://127.0.0.1:8000/admin/` to access the Django admin with Dj Signals Panel.
 
-### 7. Running Tests
+### 5. Running Tests
 
 The project includes a comprehensive test suite. You can run them by using make or
 by invoking pytest directly:
@@ -256,3 +242,9 @@ make test_docker
 # these are mostly easily brought up using docker
 make test_local
 ```
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

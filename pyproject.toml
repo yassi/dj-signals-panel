@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dj-signals-panel"
-version = "0.1.0"
+version = "0.2.0"
 description = "Display registered Django signals and receivers, showing what fires and where."
 readme = "README.md"
 license = {text = "MIT"}
@@ -47,7 +47,6 @@ dev = [
     "pytest-django>=4.5.0",
     "pytest-cov>=4.0.0",
     "pytest-xdist>=3.2.0",
-    "django-redis>=5.0.0",
     "psycopg2-binary>=2.9.0",
     "mkdocs-material>=9.1.12",
 ]
