@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 
 from django.dispatch import Signal as DjangoSignal
 
-from .conf import get_config
+from .conf import panel_config
 
 
 @dataclass
@@ -171,7 +171,7 @@ class Receiver:
             source_line=self.source_line,
             sender=self.sender,
             dispatch_uid=self.dispatch_uid,
-            source_preview=self.get_source_preview() if get_config("SHOW_SOURCE") else None,
+            source_preview=self.get_source_preview() if panel_config.get_settings("SHOW_SOURCE") else None,
         )
 
 
@@ -293,7 +293,7 @@ class SignalUtils:
 
     @staticmethod
     def get_signal_modules() -> list[str]:
-        return get_config("SIGNAL_MODULES") or []
+        return panel_config.get_settings("SIGNAL_MODULES") or []
 
     @staticmethod
     def get_installed_app_configs():
