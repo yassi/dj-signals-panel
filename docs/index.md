@@ -2,6 +2,8 @@
 
 Display registered Django signals and receivers, showing what fires and where.
 
+![DJ Signals Panel](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/dj-signals-panel.png)
+
 ## Overview
 
 Dj Signals Panel is a Django admin extension that gives you full visibility into your project's signal landscape - which signals are registered, which receivers are connected, and what that receiver code actually does.
@@ -17,7 +19,7 @@ It works great standalone, and also pairs seamlessly as a panel inside [Django C
 ## Features
 
 - **Signal discovery** - automatically discovers all registered Django signals across your project and installed apps
-- **Receiver inspection** - lists every connected receiver for each signal, including function name, module, file location, sender, and dispatch UID
+- **Receiver inspection** - lists every connected receiver for each signal, including function name, module, file location, and sender
 - **Source code viewer** - inline syntax-highlighted source for each receiver, directly in the admin (opt-in via `SHOW_SOURCE`)
 - **Additive module discovery** - use `SIGNAL_MODULES` to include signals from modules not picked up automatically
 - **Search & filter** - search signals by name, module, or app; filter by app with a dropdown
@@ -31,25 +33,19 @@ It works great standalone, and also pairs seamlessly as a panel inside [Django C
 
 A **DJ SIGNALS PANEL** section appears in the Django admin alongside your models.
 
-| Light | Dark |
-|-------|------|
-| ![Admin Home – light](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_home.png) | ![Admin Home – dark](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_home_dark.png) |
+![Admin Home](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_home.png)
 
 ### Signal List & Search
 
 Browse all registered signals with summary stats. Search by name, module, or app and filter by app using the dropdown.
 
-| Light | Dark |
-|-------|------|
-| ![Signal List – light](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_search.png) | ![Signal List – dark](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_search_dark.png) |
+![Signal List](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_search.png)
 
 ### Signal Detail
 
-Drill into any signal to see its metadata and every connected receiver. Expand **View Source** to see syntax-highlighted source code inline (requires `SHOW_SOURCE: True`).
+Drill into any signal to see its metadata and every connected receiver. Expand **View Location** to see the file path/line for each receiver, or **View Source** for syntax-highlighted source code inline (requires `SHOW_SOURCE: True`).
 
-| Light | Dark |
-|-------|------|
-| ![Signal Detail – light](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_detail.png) | ![Signal Detail – dark](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_detail_dark.png) |
+![Signal Detail](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_detail.png)
 
 ## Requirements
 
