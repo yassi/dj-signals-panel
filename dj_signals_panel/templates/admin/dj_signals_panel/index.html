@@ -94,40 +94,42 @@
   </div>
 
   {% if signals %}
-  <table>
-    <thead>
-      <tr>
-        <th>{% trans "Signal" %}</th>
-        <th>{% trans "Module" %}</th>
-        <th>{% trans "App" %}</th>
-        <th class="dcr-col--right">{% trans "Receivers" %}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for sig in signals %}
-      <tr>
-        <td>
-          <a href="{% url 'dj_signals_panel:signal_detail' sig.signal_id %}" class="dcr-data-table__link">{{ sig.name }}</a>
-        </td>
-        <td>
-          <code class="dcr-code">{{ sig.module }}</code>
-        </td>
-        <td>
-          <a href="?app={{ sig.app_label }}{% if search_query %}&q={{ search_query }}{% endif %}" class="dcr-panel-card__link">
-            <span class="{{ sig.app_label|dj_signals_panel_badge_variant }}">{{ sig.app_label }}</span>
-          </a>
-        </td>
-        <td class="dcr-col--right">
-          {% if sig.has_issues %}
-          <span class="dcr-text-muted">0</span>
-          {% else %}
-          <strong>{{ sig.receiver_count }}</strong>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="dcr-data-table__scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>{% trans "Signal" %}</th>
+          <th>{% trans "Module" %}</th>
+          <th>{% trans "App" %}</th>
+          <th class="dcr-col--right">{% trans "Receivers" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sig in signals %}
+        <tr>
+          <td>
+            <a href="{% url 'dj_signals_panel:signal_detail' sig.signal_id %}" class="dcr-data-table__link">{{ sig.name }}</a>
+          </td>
+          <td>
+            <code class="dcr-code">{{ sig.module }}</code>
+          </td>
+          <td>
+            <a href="?app={{ sig.app_label }}{% if search_query %}&q={{ search_query }}{% endif %}" class="dcr-panel-card__link">
+              <span class="{{ sig.app_label|dj_signals_panel_badge_variant }}">{{ sig.app_label }}</span>
+            </a>
+          </td>
+          <td class="dcr-col--right">
+            {% if sig.has_issues %}
+            <span class="dcr-text-muted">0</span>
+            {% else %}
+            <strong>{{ sig.receiver_count }}</strong>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% else %}
   <div class="dcr-empty">
     <h2 class="dcr-empty__title">{% trans "No signals found" %}</h2>

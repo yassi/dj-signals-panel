@@ -89,51 +89,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <div class="dcr-data-table">
   {% if receivers %}
-  <table>
-    <thead>
-      <tr>
-        <th>{% trans "Function" %}</th>
-        <th>{% trans "Module" %}</th>
-        <th>{% trans "Sender" %}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for r in receivers %}
-      <tr>
-        <td>
-          <code class="dcr-code">{{ r.qualname|default:r.function_name }}</code>
-        </td>
-        <td>
-          <code class="dcr-code">{{ r.module }}</code>
-        </td>
-        <td>
-          {% if r.sender %}
-          <code class="dcr-code">{{ r.sender }}</code>
-          {% else %}
-          <span class="dcr-text-muted">{% trans "any" %}</span>
-          {% endif %}
-        </td>
-      </tr>
-      {% if r.source_file %}
-      <tr>
-        <td colspan="3" class="source-preview-cell">
-          <details class="source-preview-details">
-            <summary>{% if r.source_preview %}{% trans "View Source" %}{% else %}{% trans "View Location" %}{% endif %}</summary>
-            <div class="dcr-mt-sm">
-              <span class="dcr-text-sm dcr-text-muted dcr-break-all dcr-font-mono">{{ r.source_file }}:{{ r.source_line|default:"?" }}</span>
-            </div>
-            {% if r.source_preview %}
-            <div class="dcr-code-viewer dcr-mt-sm">
-              <pre class="dcr-code-viewer__body"><code class="language-python">{{ r.source_preview }}</code></pre>
-            </div>
+  <div class="dcr-data-table__scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>{% trans "Function" %}</th>
+          <th>{% trans "Module" %}</th>
+          <th>{% trans "Sender" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in receivers %}
+        <tr>
+          <td>
+            <code class="dcr-code">{{ r.qualname|default:r.function_name }}</code>
+          </td>
+          <td>
+            <code class="dcr-code">{{ r.module }}</code>
+          </td>
+          <td>
+            {% if r.sender %}
+            <code class="dcr-code">{{ r.sender }}</code>
+            {% else %}
+            <span class="dcr-text-muted">{% trans "any" %}</span>
             {% endif %}
-          </details>
-        </td>
-      </tr>
-      {% endif %}
-      {% endfor %}
-    </tbody>
-  </table>
+          </td>
+        </tr>
+        {% if r.source_file %}
+        <tr>
+          <td colspan="3" class="source-preview-cell">
+            <details class="source-preview-details">
+              <summary>{% if r.source_preview %}{% trans "View Source" %}{% else %}{% trans "View Location" %}{% endif %}</summary>
+              <div class="dcr-mt-sm">
+                <span class="dcr-text-sm dcr-text-muted dcr-break-all dcr-font-mono">{{ r.source_file }}:{{ r.source_line|default:"?" }}</span>
+              </div>
+              {% if r.source_preview %}
+              <div class="dcr-code-viewer dcr-mt-sm">
+                <pre class="dcr-code-viewer__body"><code class="language-python">{{ r.source_preview }}</code></pre>
+              </div>
+              {% endif %}
+            </details>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% else %}
   <div class="dcr-empty">
     <h2 class="dcr-empty__title">{% trans "No receivers" %}</h2>
