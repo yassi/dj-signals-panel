@@ -1,10 +1,10 @@
 site_name: Dj Signals Panel
 site_description: Display registered Django signals and receivers, showing what fires and where.
 site_author: Yasser Toruno
-site_url: https://yassi.github.io/dj-signals-panel/
+site_url: https://django-control-room.github.io/dj-signals-panel/
 
-repo_name: yassi/dj-signals-panel
-repo_url: https://github.com/yassi/dj-signals-panel
+repo_name: django-control-room/dj-signals-panel
+repo_url: https://github.com/django-control-room/dj-signals-panel
 
 theme:
   name: material
