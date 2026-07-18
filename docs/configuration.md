@@ -83,7 +83,7 @@ Currently available:
 
 `themes/unfold.css` remaps Dj Signals Panel's accent/surface/border/muted tokens to Unfold's own CSS variables, so the panel matches the host site's configured brand color instead of the classic-admin blue.
 
-![Signal List with django-unfold theme](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_search_unfold.png)
+![Signal List with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-signals-panel/main/images/admin_signal_search_unfold.png)
 
 See the [dj-control-room-base configuration docs](https://yassi.github.io/dj-control-room-base/configuration/#theme-adapters) for more on how theme adapters work and how to build your own.
 

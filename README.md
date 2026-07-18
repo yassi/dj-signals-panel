@@ -1,6 +1,6 @@
 [![Django Control Room Panel](https://img.shields.io/badge/Django%20Control%20Room-Panel-0c4b33?logo=django)](https://github.com/yassi/dj-control-room)
-[![Tests](https://github.com/yassi/dj-signals-panel/actions/workflows/test.yml/badge.svg)](https://github.com/yassi/dj-signals-panel/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/yassi/dj-signals-panel/branch/main/graph/badge.svg)](https://codecov.io/gh/yassi/dj-signals-panel)
+[![Tests](https://github.com/django-control-room/dj-signals-panel/actions/workflows/test.yml/badge.svg)](https://github.com/django-control-room/dj-signals-panel/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/django-control-room/dj-signals-panel/branch/main/graph/badge.svg)](https://codecov.io/gh/django-control-room/dj-signals-panel)
 [![PyPI version](https://badge.fury.io/py/dj-signals-panel.svg)](https://badge.fury.io/py/dj-signals-panel)
 [![Python versions](https://img.shields.io/pypi/pyversions/dj-signals-panel.svg)](https://pypi.org/project/dj-signals-panel/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -13,7 +13,7 @@
 
 See every Django signal and receiver, and where they fire. Right from the Django admin.
 
-![DJ Signals Panel](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/dj-signals-panel.png)
+![DJ Signals Panel](https://raw.githubusercontent.com/django-control-room/dj-signals-panel/main/images/dj-signals-panel.png)
 
 
 **Compatible with [dj-control-room](https://github.com/yassi/dj-control-room).** Register this panel in the Control Room to manage it from a centralized dashboard.
@@ -24,7 +24,7 @@ See every Django signal and receiver, and where they fire. Right from the Django
 
 ## Docs
 
-[https://yassi.github.io/dj-signals-panel/](https://yassi.github.io/dj-signals-panel/)
+[https://django-control-room.github.io/dj-signals-panel/](https://django-control-room.github.io/dj-signals-panel/)
 
 ## Features
 
@@ -34,7 +34,7 @@ See every Django signal and receiver, and where they fire. Right from the Django
 - **Search & filter** - search signals by name, module, or app; filter by app with a dropdown
 - **Summary stats** - at-a-glance counts for total signals, total receivers, and signals with no receivers
 - **Dark mode support** - respects Django admin's built-in dark/light mode toggle
-- **django-unfold theme adapter** - opt-in stylesheet that remaps colors to match [django-unfold](https://github.com/unfoldadmin/django-unfold)'s accent/neutral palette (see [Theme adapters](https://yassi.github.io/dj-signals-panel/configuration/#theme-adapters))
+- **django-unfold theme adapter** - opt-in stylesheet that remaps colors to match [django-unfold](https://github.com/unfoldadmin/django-unfold)'s accent/neutral palette (see [Theme adapters](https://django-control-room.github.io/dj-signals-panel/configuration/#theme-adapters))
 - **No migrations required** - purely read-only introspection, zero database changes
 
 
@@ -75,13 +75,13 @@ Visit **[djangocontrolroom.com](https://djangocontrolroom.com)** to learn more.
 
 Seamlessly integrated into your Django admin interface. A **DJ SIGNALS PANEL** section appears alongside your models - no migrations required.
 
-![Admin Home](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_home.png)
+![Admin Home](https://raw.githubusercontent.com/django-control-room/dj-signals-panel/main/images/admin_home.png)
 
 ### Signal List & Search
 
 Browse all registered signals with summary stats (total signals, total receivers, signals with no receivers). Search by name, module, or app, and filter by app using the dropdown.
 
-![Signal List](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_search.png)
+![Signal List](https://raw.githubusercontent.com/django-control-room/dj-signals-panel/main/images/admin_signal_search.png)
 
 ### Signal Detail
 
@@ -89,13 +89,23 @@ Drill into any signal to see its metadata and every connected receiver - includi
 
 > **Note:** The source code viewer is opt-in. Set `SHOW_SOURCE: True` in `DJ_SIGNALS_PANEL_SETTINGS` to enable it. Use `SIGNAL_MODULES` to add extra modules to signal discovery.
 
-![Signal Detail](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_detail.png)
+![Signal Detail](https://raw.githubusercontent.com/django-control-room/dj-signals-panel/main/images/admin_signal_detail.png)
 
 ### django-unfold Theme
 
-When running under [django-unfold](https://github.com/unfoldadmin/django-unfold), enable the bundled `unfold.css` [theme adapter](https://yassi.github.io/dj-signals-panel/configuration/#theme-adapters) via `EXTRA_CSS` to match the panel's colors to the host site's accent and neutral palette. This is opt-in - it is **not** applied automatically just because django-unfold is installed.
+When running under [django-unfold](https://github.com/unfoldadmin/django-unfold), enable the bundled `unfold.css` [theme adapter](https://django-control-room.github.io/dj-signals-panel/configuration/#theme-adapters) via `EXTRA_CSS` to match the panel's colors to the host site's accent and neutral palette. This is opt-in - it is **not** applied automatically just because django-unfold is installed.
 
-![Signal List with django-unfold theme](https://raw.githubusercontent.com/yassi/dj-signals-panel/main/images/admin_signal_search_unfold.png)
+![Signal List with django-unfold theme](https://raw.githubusercontent.com/django-control-room/dj-signals-panel/main/images/admin_signal_search_unfold.png)
+
+### django-jazzmin Theme
+
+When running under [django-jazzmin](https://github.com/farridav/django-jazzmin), enable the bundled `jazzmin.css` [theme adapter](https://django-control-room.github.io/dj-signals-panel/configuration/#theme-adapters) via `EXTRA_CSS` to match the panel's colors to whichever Bootstrap/Bootswatch palette Jazzmin is configured with. This is opt-in - it is **not** applied automatically just because django-jazzmin is installed.
+
+```python
+DJ_SIGNALS_PANEL_SETTINGS = {
+    'EXTRA_CSS': ['dj_control_room_base/css/themes/jazzmin.css'],
+}
+```
 
 
 ## Installation
@@ -198,7 +208,7 @@ It is reccommended that you use docker since it will automate much of dev env se
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yassi/dj-signals-panel.git
+git clone https://github.com/django-control-room/dj-signals-panel.git
 cd dj-signals-panel
 ```
 

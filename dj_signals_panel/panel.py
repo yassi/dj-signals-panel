@@ -13,7 +13,7 @@ class SignalsPanel(PanelPlugin):
     ]
 
     app_name = "dj_signals_panel"
-    docs_url = "https://github.com/yassi/dj-signals-panel"
+    docs_url = "https://github.com/django-control-room/dj-signals-panel"
     pypi_url = "https://pypi.org/project/dj-signals-panel/"
 
     def get_url_name(self):
