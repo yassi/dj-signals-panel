@@ -62,9 +62,9 @@
     --dsp-color-plum-bg: #fbe7f6;
 }
 
-/* Dark palette applies from three possible signals, matching dj-control-room-base: */
+/* Dark palette applies from four possible signals, matching dj-control-room-base: */
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]):not([x-data]) {
+    :root:not([data-theme="light"]):not([x-data]):not([data-bs-theme]) {
         --dsp-color-teal: #2dd4bf;
         --dsp-color-teal-bg: rgba(45, 212, 191, 0.12);
         --dsp-color-pink: #f472b6;
@@ -116,10 +116,12 @@
     }
 }
 
-/* Explicit dark toggle from Django admin (data-theme="dark") or a Tailwind-style
-   theme switcher (a plain "dark" class on <html>, e.g. django-unfold). */
+/* Explicit dark toggle from Django admin (data-theme="dark"), a Tailwind-style
+   theme switcher (a plain "dark" class on <html>, e.g. django-unfold), or
+   Bootstrap 5's color-mode attribute (data-bs-theme="dark", e.g. django-jazzmin). */
 :root[data-theme="dark"],
-:root.dark {
+:root.dark,
+:root[data-bs-theme="dark"] {
     --dsp-color-teal: #2dd4bf;
     --dsp-color-teal-bg: rgba(45, 212, 191, 0.12);
     --dsp-color-pink: #f472b6;
